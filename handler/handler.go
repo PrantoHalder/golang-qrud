@@ -1,10 +1,9 @@
 package handler
 
 import (
+	"io/fs"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 	"text/template"
 
@@ -21,6 +20,9 @@ type Handler struct {
 	decoder        *form.Decoder
 	storage        dbstorage
 	Templates      *template.Template
+	staticFiles fs.FS
+	templateFiles fs.FS
+
 }
 type ErrorPage struct {
 	Code    int
@@ -80,11 +82,13 @@ type dbstorage interface {
 	Markcreate(s storage.StudentSubject) (*storage.StudentSubject, error)
 }
 
-func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbstorage) *chi.Mux {
+func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbstorage,staticFiles,templateFiles fs.FS) *chi.Mux {
 	h := &Handler{
 		sessionManager: sm,
 		decoder:        formDecoder,
 		storage:        storage,
+		staticFiles:    staticFiles,
+		templateFiles:  templateFiles,
 	}
 	h.ParseTemplates()
 	r := chi.NewRouter()
@@ -104,9 +108,7 @@ func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbsto
 		r.Post("/login", h.LoginPostHandler)
 	})
 
-	workDir, _ := os.Getwd()
-	filesDir := http.Dir(filepath.Join(workDir, "assets/templates/images"))
-	r.Handle("/static/*", http.StripPrefix("/static", http.FileServer(filesDir)))
+	r.Handle("/static/*", http.StripPrefix("/static", http.FileServer(http.FS(h.staticFiles))))
 
 	r.Route("/users", func(r chi.Router) {
 		r.Use(sm.LoadAndSave)           
@@ -193,8 +195,7 @@ func (h *Handler) ParseTemplates() error {
 		},
 	}).Funcs(sprig.FuncMap())
 
-	newFS := os.DirFS("assets/templates")
-	tmpl := template.Must(templates.ParseFS(newFS, "*/*.html"))
+	tmpl := template.Must(templates.ParseFS(h.templateFiles, "*/*.html"))
 	if tmpl == nil {
 		log.Fatalln("unable to parse templates")
 	}
