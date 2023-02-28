@@ -24,6 +24,7 @@ var assetFiles embed.FS
 
 //go:embed migrations
 var migrationFiles embed.FS
+
 func main() {
 
 	config := viper.NewWithOptions(
