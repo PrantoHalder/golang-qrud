@@ -100,6 +100,8 @@ func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbsto
 	r.Group(func(r chi.Router) {
 		r.Use(sm.LoadAndSave)
 		r.Get("/mainhome", h.MainHome)
+		r.Get("/createadmin", h.AdminCreateOutside)
+		r.Post("/outsideadminstore", h.AdminStoreOutside)
 		r.Get("/future", h.Future)
 		r.Get("/career", h.Career)
 		r.Get("/faculty", h.Faculty)
@@ -139,6 +141,7 @@ func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbsto
 		r.Get("/{id:[0-9]+}/editclass", h.EditClass)
 		r.Get("/{id:[0-9]+}/editadmin", h.EditAdmin)
 		r.Get("/{id:[0-9]+}/editsubject", h.EditSubject)
+		r.Get("/{status:[ture-false]+}/editstatus", h.EditStatus)
 		r.Get("/{id:[0-9]+}/editclass", h.EditClass)
 		r.Post("/{id:[0-9]+}/update", h.Update)
 		r.Post("/{id:[0-9]+}/updateclass", h.UpdateClass)

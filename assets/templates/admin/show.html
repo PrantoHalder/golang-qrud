@@ -69,7 +69,7 @@
           <td class="border px-4 py-2">{{.LastName}}</td>
           <td class="border px-4 py-2">{{.Class_name}}</td>
           <td class="border px-4 py-2">{{.Email}}</td>
-          <td class="border px-4 py-2">{{if .Status}}Active{{else}}Inactive{{end}}</td>
+          <td class="border px-4 py-2" name="Status"><a href="/users/{{.ID}}/statusedit">{{if .Status}}Active{{else}}Inactive{{end}}</a></td>
           <td class="border px-4 py-2"><a href="/users/{{.ID}}/edit">Edit</a></td>
           <td class="border px-4 py-2"><a href="/users/{{.ID}}/delete">Delete</a></td>
         </tr>
