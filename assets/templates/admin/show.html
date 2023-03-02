@@ -53,9 +53,8 @@
         <tr>
           <th class="px-4 py-2">ID</th>
           <th class="px-4 py-2">First Name</th>
-          <th class="px-4 py-2">Last name</th>
-          <th class="px-4 py-2">Class_id</th>
-          <th class="px-4 py-2">Username</th>
+          <th class="px-4 py-2">Last Name</th>
+          <th class="px-4 py-2">Class Name</th>
           <th class="px-4 py-2">Email</th>
           <th class="px-4 py-2">status</th>
           <th class="px-4 py-2">Edit</th>
@@ -65,12 +64,10 @@
       <tbody>
         {{range .Users}}
         <tr>
-
           <td class="border px-4 py-2">{{.ID}}</td>
           <td class="border px-4 py-2">{{.FirstName}}</td>
           <td class="border px-4 py-2">{{.LastName}}</td>
-          <td class="border px-4 py-2">{{.Class_id}}</td>
-          <td class="border px-4 py-2">{{.Username}}</td>
+          <td class="border px-4 py-2">{{.Class_name}}</td>
           <td class="border px-4 py-2">{{.Email}}</td>
           <td class="border px-4 py-2">{{if .Status}}Active{{else}}Inactive{{end}}</td>
           <td class="border px-4 py-2"><a href="/users/{{.ID}}/edit">Edit</a></td>

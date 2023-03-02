@@ -23,6 +23,7 @@ type User struct {
 	FirstName string       `form:"FirstName" db:"first_name"`
 	LastName  string       `form:"LastName" db:"last_name"`
 	Class_id  int          `form:"Class_id" db:"class_id"`
+	Class_name string      `form:"Class_name" db:"class_name"`
 	Email     string       `form:"Email" db:"email"`
 	Username  string       `form:"Username" db:"username"`
 	Password  string       `form:"Password" db:"password"`

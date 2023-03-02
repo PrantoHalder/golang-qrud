@@ -10,10 +10,13 @@ import (
 
 const listQuery = `
 
-SELECT * FROM users
+SELECT users.id,users.first_name,users.last_name,users.class_id,users.email,users.status,class.class_name
+FROM users
+FULL OUTER JOIN class ON class.id = users.class_id
 WHERE
-	deleted_at IS NULL
-	AND (first_name ILIKE '%%' || $1 || '%%' OR last_name ILIKE '%%' || $1 || '%%' OR username ILIKE '%%' || $1 || '%%' OR email ILIKE '%%' || $1 || '%%')
+	users.deleted_at IS NULL
+	AND 
+    (first_name ILIKE '%%' || $1 || '%%' OR last_name ILIKE '%%' || $1 || '%%' OR username ILIKE '%%' || $1 || '%%' OR email ILIKE '%%' || $1 || '%%')
 	ORDER BY id DESC
 `
 
