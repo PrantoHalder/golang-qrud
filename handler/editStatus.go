@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"github.com/go-chi/chi"
 )
@@ -9,7 +8,6 @@ import (
 func(h Handler) EditStatus (w http.ResponseWriter, r *http.Request){
 	id := chi.URLParam(r,"id")
 	StatusEdit,err := h.storage.StatusEdit(id)
-	fmt.Printf("%v",StatusEdit)
 	if err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 	}
@@ -32,4 +30,56 @@ func(h Handler) EditStatus (w http.ResponseWriter, r *http.Request){
 		}
    }
    http.Redirect(w,r,"/users/show",http.StatusSeeOther)
+}
+func(h Handler) EditAdminStatus (w http.ResponseWriter, r *http.Request){
+	id := chi.URLParam(r,"id")
+	StatusEdit,err := h.storage.StatusEditAdmin(id)
+	if err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+	}
+	for _,value := range StatusEdit{
+         if value.Status {
+			value.Status = false
+			err := h.storage.UpdateAdminStatus(value.Status,value.ID)
+			if err != nil {
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+			}
+		 }
+	}
+	for _,value := range StatusEdit{
+		if !value.Status {
+		   value.Status = true
+		   err := h.storage.UpdateAdminStatus(value.Status,value.ID)
+			if err != nil {
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+			}
+		}
+   }
+   http.Redirect(w,r,"/users/showadmin",http.StatusSeeOther)
+}
+func(h Handler) EditFacultyStatus (w http.ResponseWriter, r *http.Request){
+	id := chi.URLParam(r,"id")
+	StatusEdit,err := h.storage.StatusEditfaculty(id)
+	if err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+	}
+	for _,value := range StatusEdit{
+         if value.Status {
+			value.Status = false
+			err := h.storage.UpdatefacultyStatus(value.Status,value.ID)
+			if err != nil {
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+			}
+		 }
+	}
+	for _,value := range StatusEdit{
+		if !value.Status {
+		   value.Status = true
+		   err := h.storage.UpdatefacultyStatus(value.Status,value.ID)
+			if err != nil {
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+			}
+		}
+   }
+   http.Redirect(w,r,"/users/showfaculty",http.StatusSeeOther)
 }

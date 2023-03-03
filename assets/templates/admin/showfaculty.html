@@ -54,7 +54,6 @@
         <th class="px-4 py-2">ID</th>
         <th class="px-4 py-2">First Name</th>
         <th class="px-4 py-2">Last name</th>
-        <th class="px-4 py-2">Username</th>
         <th class="px-4 py-2">Email</th>
         <th class="px-4 py-2">status</th>
         <th class="px-4 py-2">Edit</th>
@@ -67,9 +66,8 @@
         <td class="border px-4 py-2">{{.ID}}</td>
         <td class="border px-4 py-2">{{.FirstName}}</td>
         <td class="border px-4 py-2">{{.LastName}}</td>
-        <td class="border px-4 py-2">{{.Username}}</td>
         <td class="border px-4 py-2">{{.Email}}</td>
-        <td class="border px-4 py-2">{{if .Status}}Active{{else}}Inactive{{end}}</td>
+        <td class="border px-4 py-2"><a href="/users/{{.ID}}/editstatusfaculty">{{if .Status}}Active{{else}}Inactive{{end}}</a></td>
         <td class="border px-4 py-2"><a href="/users/{{.ID}}/editfaculty">Edit</a></td>
         <td class="border px-4 py-2"><a href="/users/{{.ID}}/deletefaculty">Delete</a></td>
       </tr>

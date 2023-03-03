@@ -43,6 +43,34 @@ func (s PostGressStorage) StatusEdit(id string) ([]storage.User, error) {
 	}
 	return listUser, nil
 }
+const Adminstatusedit=`SELECT status,id
+FROM admin
+WHERE
+  deleted_at IS NULL
+  AND
+  id = $1`
+func (s PostGressStorage) StatusEditAdmin(id string) ([]storage.User, error) {
+	var listUser []storage.User
+	if err := s.DB.Select(&listUser, Adminstatusedit,id); err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
+	return listUser, nil
+}
+const facultystatusedit=`SELECT status,id
+FROM faculty
+WHERE
+  deleted_at IS NULL
+  AND
+  id = $1`
+func (s PostGressStorage) StatusEditfaculty(id string) ([]storage.User, error) {
+	var listUser []storage.User
+	if err := s.DB.Select(&listUser, facultystatusedit,id); err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
+	return listUser, nil
+}
 
 const UpdateStatusQuery = `
 UPDATE users SET
@@ -53,6 +81,59 @@ status = $1
 
 func (s PostGressStorage) UpdateStatus(status bool,id int) error {
 	res, err := s.DB.Exec(UpdateStatusQuery,status,id)
+	if err != nil {
+			fmt.Println(err)
+			return nil
+	}
+	
+		rowCount, err := res.RowsAffected()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	
+		if rowCount <= 0 {
+			return nil
+		}
+	
+		return nil
+	}
+const UpdateAdminStatusQuery = `
+UPDATE admin SET
+status = $1
+	WHERE id = $2 AND deleted_at is NULL
+	RETURNING *;
+	`
+
+func (s PostGressStorage) UpdateAdminStatus(status bool,id int) error {
+	res, err := s.DB.Exec(UpdateAdminStatusQuery,status,id)
+	if err != nil {
+			fmt.Println(err)
+			return nil
+	}
+	
+		rowCount, err := res.RowsAffected()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	
+		if rowCount <= 0 {
+			return nil
+		}
+	
+		return nil
+	}
+
+const UpdateFacultyStatusQuery = `
+UPDATE faculty SET
+status = $1
+	WHERE id = $2 AND deleted_at is NULL
+	RETURNING *;
+	`
+
+func (s PostGressStorage) UpdatefacultyStatus(status bool,id int) error {
+	res, err := s.DB.Exec(UpdateFacultyStatusQuery,status,id)
 	if err != nil {
 			fmt.Println(err)
 			return nil

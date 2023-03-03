@@ -54,6 +54,8 @@ type dbstorage interface {
 	UpdateSubject(u storage.Subject) (*storage.Subject, error)
 	UpdateMarksbyID(marks string,id string) error
 	UpdateStatus(status bool,id int) error 
+	UpdateAdminStatus(status bool,id int) error
+	UpdatefacultyStatus(status bool,id int) error
 
 	//accessing contents
 	GetUserByID(string) (*storage.User, error)
@@ -84,6 +86,9 @@ type dbstorage interface {
 
 	//status edit
 	StatusEdit(id string) ([]storage.User, error)
+	StatusEditAdmin(id string) ([]storage.User, error)
+	StatusEditfaculty(id string) ([]storage.User, error)
+	
 
 }
 
@@ -146,6 +151,8 @@ func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbsto
 		r.Get("/{id:[0-9]+}/editclass", h.EditClass)
 		r.Get("/{id:[0-9]+}/editadmin", h.EditAdmin)
 		r.Get("/{id:[0-9]+}/editsubject", h.EditSubject)
+		r.Get("/{id:[0-9]+}/editstatusadmin", h.EditAdminStatus)
+		r.Get("/{id:[0-9]+}/editstatusfaculty", h.EditFacultyStatus)
 		r.Get("/{id:[0-9]+}/statusedit", h.EditStatus)
 		r.Get("/{id:[0-9]+}/editclass", h.EditClass)
 		r.Post("/{id:[0-9]+}/update", h.Update)
