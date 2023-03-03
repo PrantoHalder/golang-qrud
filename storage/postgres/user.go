@@ -29,6 +29,50 @@ func (s PostGressStorage) ListUser(uf storage.UserFilter) ([]storage.User, error
 	return listUser, nil
 }
 
+const statusedit=`SELECT status,id
+FROM users
+WHERE
+  deleted_at IS NULL
+  AND
+  id = $1`
+func (s PostGressStorage) StatusEdit(id string) ([]storage.User, error) {
+	var listUser []storage.User
+	if err := s.DB.Select(&listUser, statusedit,id); err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
+	return listUser, nil
+}
+
+const UpdateStatusQuery = `
+UPDATE users SET
+status = $1
+	WHERE id = $2 AND deleted_at is NULL
+	RETURNING *;
+	`
+
+func (s PostGressStorage) UpdateStatus(status bool,id int) error {
+	res, err := s.DB.Exec(UpdateStatusQuery,status,id)
+	if err != nil {
+			fmt.Println(err)
+			return nil
+	}
+	
+		rowCount, err := res.RowsAffected()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	
+		if rowCount <= 0 {
+			return nil
+		}
+	
+		return nil
+	}
+
+
+
 const listQueryResult = `
 
 SELECT id,first_name,last_name,class_id FROM users
