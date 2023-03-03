@@ -2,9 +2,11 @@ package storage
 
 import (
 	"database/sql"
+	"regexp"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
 
 type UserFilter struct {
@@ -119,15 +121,19 @@ func (u User) Validate() error {
 		),
 		validation.Field(&u.Username,
 			validation.Required.Error("username cannot be blank"),
+			validation.Length(4, 10).Error("fast name must be between 4 to 10 characters"),
 		),
 		validation.Field(&u.Class_id,
 			validation.Required.Error("class cannot be blank"),
 		),
 		validation.Field(&u.Email,
 			validation.Required.Error("Email cannot be blank"),
+			is.Email.Error("email should be in valid format"),
 		),
 		validation.Field(&u.Password,
 			validation.Required.Error("password cannot be blank"),
+			validation.Length(6, 8).Error("fast name must be between 6 to 8 characters"),
+			validation.Required.When(u.ID == 0).Error("unable to set password"),
 		),
 	)
 }
@@ -142,19 +148,24 @@ func (u Admin) Validate() error {
 		),
 		validation.Field(&u.Username,
 			validation.Required.Error("username cannot be blank"),
+			validation.Length(4, 10).Error("fast name must be between 4 to 10 characters"),
 		),
 		validation.Field(&u.Email,
 			validation.Required.Error("email cannot be blank"),
+			is.Email.Error("email should be in valid format"),
 		),
 		validation.Field(&u.Password,
 			validation.Required.Error("password cannot be blank"),
+			validation.Length(6, 8).Error("fast name must be between 6 to 8 characters"),
+			validation.Required.When(u.ID == 0).Error("unable to set password"),
 		),
 	)
 }
 func (u Class) Validate() error {
 	return validation.ValidateStruct(&u, validation.Field(&u.Class_name,
 		validation.Required.Error("class can not be blank"),
-		validation.Length(3, 45).Error("Name must be between 3 to 45 characters"),
+		validation.Match(regexp.MustCompile(`^Class-[1-9]$|^Class-10$`)).
+		Error("Class must be in the format 'Class-[1-10]'"),
 	),
 )
 }

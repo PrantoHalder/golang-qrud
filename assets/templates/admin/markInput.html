@@ -13,23 +13,7 @@
 		<div class="max-w-md mx-auto bg-white p-5 rounded-md shadow-md">
 			<h2 class="text-xl font-bold mb-5">Input Mark Section</h2>
 			<form class="flex flex-col" action="/users/insertmarks" method="get">
-				<label for="dropdown1" class="mb-2 font-bold text-md">Insert Class:</label>
-
-			<div>
-                    
-                    <select class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        name="Class_id">
-                        <option value="" selected>Choose a category</option>
-                        {{range .Classlist}}
-                        <option value="{{.ID}}">{{.Class_name}}</option>
-                        {{end}}
-                    </select>
-                    {{ with (index .FormError "Class_id")}}
-                    <p style="color: brown;">{{.}}</p>
-                    {{end}}
-                </div>
 				
-
 				<label for="dropdown2" class="mt-4 mb-2 font-bold text-md">Select Student name:</label>
 
 				<select class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
