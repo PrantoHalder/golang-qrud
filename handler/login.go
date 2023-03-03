@@ -52,50 +52,66 @@ func (h Handler) LoginPostHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	for _, value := range lf.Loginas {
+		fmt.Println("---------check-1-----------")
 		if value == "Admin" {
-			if err := lf.validate(); err != nil {
-				if vErr, ok := err.(validation.Errors); ok {
-					lf.FormError = vErr
-				}
-				h.pareseLoginTemplate(w, LoginUser{
-					Username:  lf.Username,
-					Password:  "",
-					FormError: lf.FormError,
-					CSRFToken: nosurf.Token(r),
-				})
-				return
-			}
-			user, err := h.storage.GetAdminByUsername(lf.Username)
+			fmt.Println("---------check-2-----------")
+			user, err := h.storage.GetStatusbyUsernameQuery(lf.Username)
+			fmt.Printf("%#v",user)
 			if err != nil {
-				if err.Error() == postgres.NotFound {
-					formErr := make(map[string]error)
-					formErr["Username"] = fmt.Errorf("credentials does not match")
-					lf.FormError = formErr
-					lf.CSRFToken = nosurf.Token(r)
-					lf.Password = ""
-					h.pareseLoginTemplate(w, lf)
-					return
-				}
-
 				http.Error(w, "internal server error", http.StatusInternalServerError)
-				return
 			}
-			if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(lf.Password)); err != nil {
-				formErr := make(map[string]error)
-				formErr["Username"] = fmt.Errorf("credentials does not match")
-				lf.FormError = formErr
-				h.pareseLoginTemplate(w, LoginUser{
-					Username:  lf.Username,
-					Password:  "",
-					FormError: lf.FormError,
-					CSRFToken: nosurf.Token(r),
-				})
-				return
-			}
+			fmt.Println("---------check-3-----------")
+			for _, usr := range user {
+				fmt.Printf("%#v",usr.Status)
+				fmt.Println("---------check-4-----------")
+				if usr.Status {
+					if err := lf.validate(); err != nil {
+						if vErr, ok := err.(validation.Errors); ok {
+							lf.FormError = vErr
+						}
+						h.pareseLoginTemplate(w, LoginUser{
+							Username:  lf.Username,
+							Password:  "",
+							FormError: lf.FormError,
+							CSRFToken: nosurf.Token(r),
+						})
+						return
+					}
+					user, err := h.storage.GetAdminByUsername(lf.Username)
+					if err != nil {
+						if err.Error() == postgres.NotFound {
+							formErr := make(map[string]error)
+							formErr["Username"] = fmt.Errorf("credentials does not match")
+							lf.FormError = formErr
+							lf.CSRFToken = nosurf.Token(r)
+							lf.Password = ""
+							h.pareseLoginTemplate(w, lf)
+							return
+						}
 
-			h.sessionManager.Put(r.Context(), "userID", strconv.Itoa(user.ID))
-			http.Redirect(w, r, "/users/home", http.StatusSeeOther)
-			return
+						http.Error(w, "internal server error", http.StatusInternalServerError)
+						return
+					}
+					if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(lf.Password)); err != nil {
+						formErr := make(map[string]error)
+						formErr["Username"] = fmt.Errorf("credentials does not match")
+						lf.FormError = formErr
+						h.pareseLoginTemplate(w, LoginUser{
+							Username:  lf.Username,
+							Password:  "",
+							FormError: lf.FormError,
+							CSRFToken: nosurf.Token(r),
+						})
+						return
+					}
+
+					h.sessionManager.Put(r.Context(), "userID", strconv.Itoa(user.ID))
+					http.Redirect(w, r, "/users/home", http.StatusSeeOther)
+					return
+				} else {
+					h.pareseInactiveTemplate(w, nil)
+				}
+			}
 		}
 	}
 
@@ -103,16 +119,19 @@ func (h Handler) LoginPostHandler(w http.ResponseWriter, r *http.Request) {
 		if value == "Student" {
 			pareseStudentHomeTemplate(w, nil)
 
+		}else{
+
+			return
 		}
-		return
 	}
 
 	for _, value := range lf.Loginas {
 		if value == "Faculty" {
 			pareseFacultyHomeTemplate(w, nil)
 
+		}else{
+			return
 		}
-		return
 	}
 	h.pareseLoginTemplate(w, nil)
 }
@@ -133,6 +152,13 @@ func pareseStudentHomeTemplate(w http.ResponseWriter, data any) {
 }
 func pareseFacultyHomeTemplate(w http.ResponseWriter, data any) {
 	t, err := template.ParseFiles("assets/templates/faculty/facultyHome.html")
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
+	t.Execute(w, data)
+}
+func (h Handler) pareseInactiveTemplate(w http.ResponseWriter, data any) {
+	t, err := template.ParseFiles("assets/templates/open/Unactive.html")
 	if err != nil {
 		log.Fatalf("%v", err)
 	}

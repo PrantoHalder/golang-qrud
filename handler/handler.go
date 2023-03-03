@@ -70,6 +70,7 @@ type dbstorage interface {
 	GetSubject(id string) ([]storage.SubjectFrom, error)
 	GetMarkByID(id string) ([]storage.MarkIN, error)
 	MarkEdit(id string) (*storage.MarkEdit, error)
+	GetStatusbyUsernameQuery(username string) ([]storage.User, error)
 
 	//login with different roles
 	GetAdminByUsername(username string) (*storage.Admin, error)

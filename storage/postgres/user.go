@@ -43,6 +43,20 @@ func (s PostGressStorage) StatusEdit(id string) ([]storage.User, error) {
 	}
 	return listUser, nil
 }
+const getStatusbyUsernameQuery=`SELECT status
+FROM admin
+WHERE
+  deleted_at IS NULL
+  AND
+  username = $1`
+func (s PostGressStorage) GetStatusbyUsernameQuery(username string) ([]storage.User, error) {
+	var listUser []storage.User
+	if err := s.DB.Select(&listUser, getStatusbyUsernameQuery,username); err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
+	return listUser, nil
+}
 const Adminstatusedit=`SELECT status,id
 FROM admin
 WHERE
