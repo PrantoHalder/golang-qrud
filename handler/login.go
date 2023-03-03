@@ -52,18 +52,13 @@ func (h Handler) LoginPostHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	for _, value := range lf.Loginas {
-		fmt.Println("---------check-1-----------")
 		if value == "Admin" {
-			fmt.Println("---------check-2-----------")
 			user, err := h.storage.GetStatusbyUsernameQuery(lf.Username)
-			fmt.Printf("%#v",user)
 			if err != nil {
 				http.Error(w, "internal server error", http.StatusInternalServerError)
 			}
-			fmt.Println("---------check-3-----------")
 			for _, usr := range user {
 				fmt.Printf("%#v",usr.Status)
-				fmt.Println("---------check-4-----------")
 				if usr.Status {
 					if err := lf.validate(); err != nil {
 						if vErr, ok := err.(validation.Errors); ok {
