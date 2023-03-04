@@ -16,18 +16,13 @@ type MarkForm struct {
 }
 
 func (h Handler) InputMarks(w http.ResponseWriter, r *http.Request) {
-	classlist, err := h.storage.GetClass()
-	if err != nil {
-		log.Println(err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
-	}
+
 	studentList, err := h.storage.GetStudent()
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 	}
 	h.ParseInputMarksTemplate(w, UserFrom{
-		Classlist:   classlist,
 		StudentList: studentList,
 		FormError:   map[string]error{},
 		CSRFToken:   nosurf.Token(r),

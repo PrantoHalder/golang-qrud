@@ -21,7 +21,7 @@ type ResultFilter struct {
 	SearchTerm string
 }
 type User struct {
-	ID        int          `form:"-" db:"id"`
+	ID        int          `form:"ID" db:"id"`
 	FirstName string       `form:"FirstName" db:"first_name"`
 	LastName  string       `form:"LastName" db:"last_name"`
 	Class_id  int          `form:"Class_id" db:"class_id"`
@@ -35,7 +35,7 @@ type User struct {
 	DeletedAt sql.NullTime `form:"Deleted_at" db:"deleted_at"`
 }
 type Admin struct {
-	ID        int          `form:"-" db:"id"`
+	ID        int          `form:"ID" db:"id"`
 	FirstName string       `form:"FirstName" db:"first_name"`
 	LastName  string       `form:"LastName" db:"last_name"`
 	Email     string       `form:"Email" db:"email"`
@@ -49,7 +49,7 @@ type Admin struct {
 }
 
 type Class struct {
-	ID        int          `form:"-" db:"id"`
+	ID        int          `form:"ID" db:"id"`
 	Class_name    string   `db:"class_name" form:"Class_name"`
 	CreatedAt time.Time    `db:"created_at"`
 	UpdatedAt time.Time    `db:"updated_at"`
@@ -57,7 +57,7 @@ type Class struct {
 }
 
 type Subject struct {
-	ID        int          `form:"-" db:"id"`
+	ID        int          `form:"ID" db:"id"`
 	Subject   string       `db:"subject" form:"Subject"`
 	Class_id     string    `db:"class" form:"Class_id"`
 	CreatedAt time.Time    `db:"created_at"`

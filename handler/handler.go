@@ -71,6 +71,12 @@ type dbstorage interface {
 	GetMarkByID(id string) ([]storage.MarkIN, error)
 	MarkEdit(id string) (*storage.MarkEdit, error)
 	GetStatusbyUsernameQuery(username string) ([]storage.User, error)
+	GetFacultyByUsername(username string) (*storage.Admin, error) 
+	GetStatusbyUsernameQueryOFFaculty(username string) ([]storage.User, error)
+	GetStatusbyUsernameQueryOFUsers(username string) ([]storage.User, error)
+	GetUsersByUsername(username string) (*storage.Admin, error) 
+	GetFacultyEdit(id string) ([]storage.User, error)
+	GetUserEditQuery(id string) ([]storage.User, error)
 
 	//login with different roles
 	GetAdminByUsername(username string) (*storage.Admin, error)
@@ -170,15 +176,25 @@ func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbsto
 		r.Get("/{id:[0-9]+}/deletesubject", h.DeleteSubject)
 		r.Get("/{id:[0-9]+}/showresultdetails", h.ShowResultDetails)
 	})
-	r.Route("/users", func(r chi.Router) {
+	r.Route("/facultys", func(r chi.Router) {
 		r.Use(sm.LoadAndSave)           
 		r.Use(h.Authentication)
+		r.Get("/{id:[0-9]+}/home", h.FacultyHome)
+		r.Get("/inputmarks", h.InputMarks)
+	})
+	r.Route("/students", func(r chi.Router) {
+		r.Use(sm.LoadAndSave)           
+		r.Use(h.Authentication)
+		r.Get("/{id:[0-9]+}/home", h.StudentsHome)
 		
+
 	})
 	r.Group(func(r chi.Router) {
 		r.Use(sm.LoadAndSave)
 		r.Use(h.Authentication)
 		r.Get("/logout", h.Logouthandler)
+		r.Get("/logoutfaculty", h.LogoutFacultyhandler)
+		r.Get("/logoutstudents", h.LogoutStudentshandler)
 	})
 
 	return r

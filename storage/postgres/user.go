@@ -57,20 +57,35 @@ func (s PostGressStorage) GetStatusbyUsernameQuery(username string) ([]storage.U
 	}
 	return listUser, nil
 }
-const getAdminStatusQuery=`SELECT status
-FROM admin
+const getStatusbyUsernameQueryOfFaculty=`SELECT status
+FROM faculty
 WHERE
   deleted_at IS NULL
   AND
   username = $1`
-func (s PostGressStorage) getAdminStatus(username string) ([]storage.User, error) {
+func (s PostGressStorage) GetStatusbyUsernameQueryOFFaculty(username string) ([]storage.User, error) {
 	var listUser []storage.User
-	if err := s.DB.Select(&listUser, getAdminStatusQuery,username); err != nil {
+	if err := s.DB.Select(&listUser, getStatusbyUsernameQueryOfFaculty,username); err != nil {
 		log.Fatalln(err)
 		return nil, err
 	}
 	return listUser, nil
 }
+const getStatusbyUsernameQueryOfUsers=`SELECT status
+FROM users
+WHERE
+  deleted_at IS NULL
+  AND
+  username = $1`
+func (s PostGressStorage) GetStatusbyUsernameQueryOFUsers(username string) ([]storage.User, error) {
+	var listUser []storage.User
+	if err := s.DB.Select(&listUser, getStatusbyUsernameQueryOfUsers,username); err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
+	return listUser, nil
+}
+
 const Adminstatusedit=`SELECT status,id
 FROM admin
 WHERE
@@ -472,6 +487,31 @@ func (s PostGressStorage) GetAdminByUsername(username string) (*storage.Admin, e
 	return &u, nil
 }
 
+const GetFacultyByUsernameQuery = `SELECT * FROM faculty WHERE username = $1 AND deleted_at IS NULL;`
+
+func (s PostGressStorage) GetFacultyByUsername(username string) (*storage.Admin, error) {
+	var u storage.Admin
+	if err := s.DB.Get(&u, GetFacultyByUsernameQuery, username); err != nil {
+		if err.Error() == NotFound {
+			return nil, fmt.Errorf(NotFound)
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+const GetUsersByUsernameQuery = `SELECT * FROM faculty WHERE username = $1 AND deleted_at IS NULL;`
+
+func (s PostGressStorage) GetUsersByUsername(username string) (*storage.Admin, error) {
+	var u storage.Admin
+	if err := s.DB.Get(&u, GetUsersByUsernameQuery, username); err != nil {
+		if err.Error() == NotFound {
+			return nil, fmt.Errorf(NotFound)
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
 const insertFacultyQuery = `
 		INSERT INTO faculty(
 			first_name,
@@ -855,4 +895,32 @@ func (p PostGressStorage) Markcreate(s storage.StudentSubject) (*storage.Student
 
 	return &s, nil
 
+}
+const getFacultyEditQuery = `SELECT id
+FROM faculty
+WHERE
+  deleted_at IS NULL
+  AND
+  id = $1`
+  func (s PostGressStorage) GetFacultyEdit(id string) ([]storage.User, error) {
+	var u []storage.User
+	if err := s.DB.Select(&u,getFacultyEditQuery,id); err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
+	return u, nil
+}
+const getUserEditQuery = `SELECT id
+FROM users
+WHERE
+  deleted_at IS NULL
+  AND
+  id = $1`
+  func (s PostGressStorage) GetUserEditQuery(id string) ([]storage.User, error) {
+	var u []storage.User
+	if err := s.DB.Select(&u,getUserEditQuery,id); err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
+	return u, nil
 }

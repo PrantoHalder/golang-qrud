@@ -18,21 +18,15 @@
     <nav class="bg-white p-6">
       <div class="container mx-auto flex items-center justify-between">
         <div class="flex items-center">
-          <a href="#" class="font-bold text-xl">Home</a>
+          <a href="/facultys/home">
+            <img class="w-auto h-6 sm:h-7" src="/static/schoollogo.jpg" style="width:100px;height:100px;" alt="">
+        </a>
         </div>
         <div class="flex items-center">
-          <a href="#" class="px-3 py-2 text-gray-800 hover:bg-gray-300">Home</a>
-          <a href="#" class="px-3 py-2 text-gray-800 hover:bg-gray-300">Insert Marks</a>
-          <a href="#" class="px-3 py-2 text-gray-800 hover:bg-gray-300">Edit Information</a>
-          <a href="#" class="px-3 py-2 text-gray-800 hover:bg-gray-300">Log Out</a>
+          <a href="/facultys/inputmarks" class="px-3 py-2 text-gray-800 hover:bg-gray-300">Insert Marks</a>
+          <a href="/facultys/{{.ID}}/edit" class="px-3 py-2 text-gray-800 hover:bg-gray-300">Edit Information</a>
+          <a href="/logoutfaculty" class="px-3 py-2 text-gray-800 hover:bg-gray-300">Log Out</a>
         </div>
-        <div class="flex items-center">
-          <form class="flex items-center">
-            <input type="text" class="bg-gray-200 px-3 py-2 rounded-lg text-gray-700 w-64" placeholder="Search">
-            <button type="submit" class="bg-gray-300 px-3 py-2 rounded-lg text-gray-700"><a href="/users/search">Search </a></button>
-          </form>
-        </div>
-      </div>
     </nav>
   </body>
 </html>
