@@ -170,6 +170,11 @@ func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbsto
 		r.Get("/{id:[0-9]+}/deletesubject", h.DeleteSubject)
 		r.Get("/{id:[0-9]+}/showresultdetails", h.ShowResultDetails)
 	})
+	r.Route("/users", func(r chi.Router) {
+		r.Use(sm.LoadAndSave)           
+		r.Use(h.Authentication)
+		
+	})
 	r.Group(func(r chi.Router) {
 		r.Use(sm.LoadAndSave)
 		r.Use(h.Authentication)
