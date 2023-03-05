@@ -20,9 +20,8 @@ type Handler struct {
 	decoder        *form.Decoder
 	storage        dbstorage
 	Templates      *template.Template
-	staticFiles fs.FS
-	templateFiles fs.FS
-
+	staticFiles    fs.FS
+	templateFiles  fs.FS
 }
 type ErrorPage struct {
 	Code    int
@@ -35,7 +34,7 @@ type dbstorage interface {
 	ListAdmin(storage.AdminFilter) ([]storage.Admin, error)
 	ListFaculty(storage.AdminFilter) ([]storage.Admin, error)
 	ListClass() ([]storage.Class, error)
-	ListUserResult(uf storage.ResultFilter) ([]storage.User, error) 
+	ListUserResult(uf storage.ResultFilter) ([]storage.User, error)
 	//Create contents
 	CreateUser(u storage.User) (*storage.User, error)
 	CreateAdmin(u storage.Admin) (*storage.Admin, error)
@@ -45,17 +44,17 @@ type dbstorage interface {
 
 	// insert contents
 	InsertMark(s storage.StudentSubject) (*storage.StudentSubject, error)
-	
+
 	//update contents
 	UpdateUser(u storage.User) (*storage.User, error)
 	UpdateAdmin(u storage.Admin) (*storage.Admin, error)
 	UpdateFaculty(u storage.Admin) (*storage.Admin, error)
 	UpdateClass(u storage.Class) (*storage.Class, error)
 	UpdateSubject(u storage.Subject) (*storage.Subject, error)
-	UpdateMarksbyID(marks string,id string) error
-	UpdateStatus(status bool,id int) error 
-	UpdateAdminStatus(status bool,id int) error
-	UpdatefacultyStatus(status bool,id int) error
+	UpdateMarksbyID(marks string, id string) error
+	UpdateStatus(status bool, id int) error
+	UpdateAdminStatus(status bool, id int) error
+	UpdatefacultyStatus(status bool, id int) error
 
 	//accessing contents
 	GetUserByID(string) (*storage.User, error)
@@ -66,15 +65,15 @@ type dbstorage interface {
 	GetSubjectByClassID(id string) ([]storage.Subject, error)
 	GetSubjectByID(id string) (*storage.Subject, error)
 	GetSubjectByClassID2(class int) ([]storage.Subject, error)
-	GetStudent() ([]storage.User, error) 
+	GetStudent() ([]storage.User, error)
 	GetSubject(id string) ([]storage.SubjectFrom, error)
 	GetMarkByID(id string) ([]storage.MarkIN, error)
 	MarkEdit(id string) (*storage.MarkEdit, error)
 	GetStatusbyUsernameQuery(username string) ([]storage.User, error)
-	GetFacultyByUsername(username string) (*storage.Admin, error) 
+	GetFacultyByUsername(username string) (*storage.Admin, error)
 	GetStatusbyUsernameQueryOFFaculty(username string) ([]storage.User, error)
 	GetStatusbyUsernameQueryOFUsers(username string) ([]storage.User, error)
-	GetUsersByUsername(username string) (*storage.Admin, error) 
+	GetUsersByUsername(username string) (*storage.Admin, error)
 	GetFacultyEdit(id string) ([]storage.User, error)
 	GetUserEditQuery(id string) ([]storage.User, error)
 
@@ -95,11 +94,9 @@ type dbstorage interface {
 	StatusEdit(id string) ([]storage.User, error)
 	StatusEditAdmin(id string) ([]storage.User, error)
 	StatusEditfaculty(id string) ([]storage.User, error)
-	
-
 }
 
-func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbstorage,staticFiles,templateFiles fs.FS) *chi.Mux {
+func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbstorage, staticFiles, templateFiles fs.FS) *chi.Mux {
 	h := &Handler{
 		sessionManager: sm,
 		decoder:        formDecoder,
@@ -130,7 +127,7 @@ func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbsto
 	r.Handle("/static/*", http.StripPrefix("/static", http.FileServer(http.FS(h.staticFiles))))
 
 	r.Route("/users", func(r chi.Router) {
-		r.Use(sm.LoadAndSave)           
+		r.Use(sm.LoadAndSave)
 		r.Use(h.Authentication)
 		r.Get("/home", h.Home)
 		r.Get("/inputmarks", h.InputMarks)
@@ -177,16 +174,15 @@ func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbsto
 		r.Get("/{id:[0-9]+}/showresultdetails", h.ShowResultDetails)
 	})
 	r.Route("/facultys", func(r chi.Router) {
-		r.Use(sm.LoadAndSave)           
+		r.Use(sm.LoadAndSave)
 		r.Use(h.Authentication)
 		r.Get("/{id:[0-9]+}/home", h.FacultyHome)
 		r.Get("/inputmarks", h.InputMarks)
 	})
 	r.Route("/students", func(r chi.Router) {
-		r.Use(sm.LoadAndSave)           
+		r.Use(sm.LoadAndSave)
 		r.Use(h.Authentication)
 		r.Get("/{id:[0-9]+}/home", h.StudentsHome)
-		
 
 	})
 	r.Group(func(r chi.Router) {
@@ -240,4 +236,3 @@ func (h *Handler) ParseTemplates() error {
 	h.Templates = tmpl
 	return nil
 }
-
