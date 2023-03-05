@@ -32,7 +32,7 @@ func main() {
 			strings.NewReplacer(".", "_"),
 		),
 	)
-	config.SetConfigFile("env/config")
+	config.SetConfigFile("config")
 	config.SetConfigType("ini")
 	config.AutomaticEnv()
 	if err := config.ReadInConfig(); err != nil {
@@ -48,10 +48,11 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	goose.SetBaseFS(migrationFiles)
 	if err := goose.SetDialect("postgres"); err != nil {
         log.Fatalln(err)
     }
-
+	
     if err := goose.Up(postGresStore.DB.DB, "migrations"); err != nil {
         log.Fatalln(err)
     }
@@ -67,8 +68,8 @@ func main() {
 	sessionManager.Store = NewSQLXStore(postGresStore.DB)
 
 	var assetFS = fs.FS(assetFiles)
-	staticFiles, err := fs.Sub(assetFS, "assets/templates/images")
-	if err != nil {
+	staticFiles, err1 := fs.Sub(assetFS, "assets/templates/images")
+	if err1 != nil {
 		log.Fatal(err)
 	}
 
