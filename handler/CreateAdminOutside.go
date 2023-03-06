@@ -19,12 +19,14 @@ func(h Handler) AdminCreateOutside (w http.ResponseWriter, r *http.Request){
 }
 func(h Handler) AdminStoreOutside (w http.ResponseWriter, r *http.Request){
 	if err := r.ParseForm(); err != nil {
-		log.Fatalf("%#v", err)
+		log.Printf("This error is inside AdminStoreOutside Handler after ParseForm %#v",err)
+		http.Redirect(w,r,"/internalservererror",http.StatusSeeOther)
 	}
     form := AdminFrom{}
 	user := storage.Admin{}
 	if err := h.decoder.Decode(&user, r.PostForm); err != nil {
-		log.Fatal(err)
+		log.Printf("This error is inside AdminStoreOutside Handler after Decode %#v",err)
+		http.Redirect(w,r,"/internalservererror",http.StatusSeeOther)
 	}
     form.User = user
 	if err := user.Validate(); err != nil {
@@ -40,7 +42,8 @@ func(h Handler) AdminStoreOutside (w http.ResponseWriter, r *http.Request){
 	}
     _,err := h.storage.CreateAdmin(user)
 	if err != nil {
-		log.Fatalln(err)
+		log.Printf("This error is inside AdminStoreOutside Handler after CreateAdmin query %#v",err)
+		http.Redirect(w,r,"/internalservererror",http.StatusSeeOther)
 	}
 
 	http.Redirect(w, r, fmt.Sprintln("/login"), http.StatusSeeOther)

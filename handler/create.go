@@ -13,8 +13,8 @@ import (
 func(h Handler) Create (w http.ResponseWriter, r *http.Request){
 	classlist, err := h.storage.GetClass()
 	if err != nil {
-		log.Println(err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		log.Printf("This error is inside create Handler after GetClass Query %#v",err)
+		http.Redirect(w,r,"/internalservererror",http.StatusSeeOther)
 	}
 
 	h.ParseCreateTemplate(w, UserFrom{

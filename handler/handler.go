@@ -138,6 +138,7 @@ func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbsto
 		r.Get("/showfaculty", h.ShowFaculty)
 		r.Get("/showclass", h.ShowClass)
 		r.Get("/showresult", h.ShowResult)
+		r.Get("/internalservererror", h.InternalServerError)
 		r.Get("/showsubjectdetails", h.ShowSubjectDetails)
 		r.Get("/showsubject", h.ShowSubject)
 		r.Get("/create", h.Create)

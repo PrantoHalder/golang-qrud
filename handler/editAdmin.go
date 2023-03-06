@@ -17,8 +17,8 @@ func (h Handler) EditAdmin(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	editUser, err := h.storage.GetAdminByID(id)
 	if err != nil {
-		log.Fatalln(err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Printf("This error is inside EditAdmin Handler after chi %#v",err)
+		http.Redirect(w,r,"/internalservererror",http.StatusSeeOther)
 	}
 	var form AdminFrom
 	form.User = *editUser
@@ -29,12 +29,14 @@ func (h Handler) UpdateAdmin(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	uID, err := strconv.Atoi(id)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("This error is UpdateAdmin Handler after chi %#v",err)
+		http.Redirect(w,r,"/internalservererror",http.StatusSeeOther)
 	}
 	var form AdminFrom
 	user := storage.Admin{ID: uID}
 	if err := h.decoder.Decode(&user, r.PostForm); err != nil {
-		log.Fatalln(err)
+		log.Printf("This error is UpdateAdmin Handler after Decode %#v",err)
+		http.Redirect(w,r,"/internalservererror",http.StatusSeeOther)
 	}
 	form.User = user
 	if err := user.Validate(); err != nil {
@@ -51,7 +53,8 @@ func (h Handler) UpdateAdmin(w http.ResponseWriter, r *http.Request) {
 
 	_, err1 := h.storage.UpdateAdmin(user)
 	if err1 != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Printf("This error is UpdateAdmin Handler after UpdateAdmin query %#v",err)
+		http.Redirect(w,r,"/internalservererror",http.StatusSeeOther)
 	}
 
 	http.Redirect(w, r, "/users/showadmin", http.StatusSeeOther)

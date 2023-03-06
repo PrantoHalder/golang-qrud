@@ -11,14 +11,14 @@ import (
 func (h Handler) Edit(w http.ResponseWriter, r *http.Request) {
 	classlist, err := h.storage.GetClass()
 	if err != nil {
-		log.Println(err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		log.Printf("This error is inside Edit Handler after GetClass query %#v",err)
+		http.Redirect(w,r,"/internalservererror",http.StatusSeeOther)
 	}
 	id := chi.URLParam(r,"id")
 	editUser,err :=h.storage.GetUserByID(id)
 	if err !=nil{
-		log.Fatalln(err)
-		http.Error(w,"Internal Server Error",http.StatusInternalServerError)
+		log.Printf("This error is inside Edit Handler after GetUserByID query %#v",err)
+		http.Redirect(w,r,"/internalservererror",http.StatusSeeOther)
 	}
 	
 	PareseEditUserTemplate(w,UserFrom{
