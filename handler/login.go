@@ -103,7 +103,8 @@ func (h Handler) LoginPostHandler(w http.ResponseWriter, r *http.Request) {
 					http.Redirect(w, r, "/users/home", http.StatusSeeOther)
 					return
 				} else {
-					h.pareseInactiveTemplate(w, nil)
+					http.Redirect(w, r, "/inactive", http.StatusSeeOther)
+					return
 				}
 			}
 		}
@@ -163,7 +164,8 @@ func (h Handler) LoginPostHandler(w http.ResponseWriter, r *http.Request) {
 					http.Redirect(w, r,fmt.Sprintf("/facultys/%v/home",user.ID), http.StatusSeeOther)
 					return
 				} else {
-					h.pareseInactiveTemplate(w, nil)
+					http.Redirect(w, r, "/inactive", http.StatusSeeOther)
+					return
 				}
 			}
 		}
@@ -223,7 +225,8 @@ func (h Handler) LoginPostHandler(w http.ResponseWriter, r *http.Request) {
 					http.Redirect(w, r, fmt.Sprintf("/students/%v/home",user.ID), http.StatusSeeOther)
 					return
 				} else {
-					h.pareseInactiveTemplate(w, nil)
+					http.Redirect(w, r, "/inactive", http.StatusSeeOther)
+					return
 				}
 			}
 		}
@@ -242,21 +245,15 @@ func (h Handler) pareseLoginTemplate(w http.ResponseWriter, data any) {
 	}
 	t.Execute(w, data)
 }
-func pareseStudentHomeTemplate(w http.ResponseWriter, data any) {
-	t, err := template.ParseFiles("assets/templates/students/studentHome.html")
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
-	t.Execute(w, data)
-}
 
-func (h Handler) pareseInactiveTemplate(w http.ResponseWriter, data any) {
+func (h Handler) Inactive (w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles("assets/templates/open/Unactive.html")
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
-	t.Execute(w, data)
+	t.Execute(w,nil)
 }
+
 
 func (lu LoginUser) validate() error {
 	return validation.ValidateStruct(&lu, validation.Field(&lu.Username,

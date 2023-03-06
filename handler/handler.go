@@ -115,6 +115,7 @@ func NewHandler(sm *scs.SessionManager, formDecoder *form.Decoder, storage dbsto
 		r.Use(sm.LoadAndSave)
 		r.Get("/mainhome", h.MainHome)
 		r.Get("/createadmin", h.AdminCreateOutside)
+		r.Get("/inactive", h.Inactive)
 		r.Post("/outsideadminstore", h.AdminStoreOutside)
 		r.Get("/future", h.Future)
 		r.Get("/career", h.Career)

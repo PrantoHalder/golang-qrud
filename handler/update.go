@@ -41,6 +41,8 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+	
+	
 
 	_, err1 := h.storage.UpdateUser(user)
 	if err1 != nil {
